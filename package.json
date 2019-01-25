@@ -1,0 +1,22 @@
+{
+  "name": "blog-api",
+  "version": "1.0.0",
+  "description": "Challenge: Blog API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trevarwilliams/blog-api.git"
+  },
+  "author": "Trevar Williams",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trevarwilliams/blog-api/issues"
+  },
+  "homepage": "https://github.com/trevarwilliams/blog-api#readme",
+  "dependencies": {
+    "uuid": "^3.3.2"
+  }
+}
