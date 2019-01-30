@@ -69,7 +69,6 @@ describe("Blog Posts", function () {
       .get("/blog-posts")
       .then(function (res) {
         updatePost.id = res.body[0].id;
-        console.log("updatePost", updatePost);
         return chai
           .request(app)
           .put(`/blog-posts/${updatePost.id}`)
