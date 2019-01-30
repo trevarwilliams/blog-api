@@ -15,7 +15,6 @@ BlogPosts.create(
   "Content placeholder2",
   "Author placeholder2"
 );
-console.log("BlogPosts", BlogPosts);
 // GET
 router.get("/", (req, res) => {
   res.json(BlogPosts.get());
