@@ -17,12 +17,12 @@ BlogPosts.create(
 );
 
 // GET
-app.get('/blog-posts', (req, res) => {
+router.get('/blog-posts', (req, res) => {
   res.json(BlogPosts.get());
 });
 
 // POST
-app.post('/blog-posts', (req, res) => {
+router.post('/blog-posts', (req, res) => {
   // Validate fields
   const requiredFields = ['title', 'content', 'author'];
   for (let i = 0; i < requiredFields.length; i++) {
@@ -44,7 +44,7 @@ app.post('/blog-posts', (req, res) => {
 });
 
 // PUT
-app.put('/blog-posts/:id', (req, res) => {
+router.put('/blog-posts/:id', (req, res) => {
   // Validate fields
   const requiredFields = ['title', 'content', 'author', 'publishDate', 'id'];
   for (let i = 0; i < requiredFields.length; i++) {
@@ -77,7 +77,7 @@ app.put('/blog-posts/:id', (req, res) => {
 });
 
 // DELETE
-app.delete('/blog-posts/:id', (req, res) => {
+router.delete('/blog-posts/:id', (req, res) => {
   BlogPosts.delete(req.params.id);
   console.log(`Deleted blog post \`${req.params.id}\``);
   res.status(204).end();
