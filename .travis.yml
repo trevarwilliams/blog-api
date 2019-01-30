@@ -1,2 +1,7 @@
 language: node_js
 node_js: node
+deploy:
+  provider: heroku
+  app: secret-beach-63832
+  api_key:
+    secure: I/FBGeRQwOcCHKE9Pc3q+1hPlbUFavmTtdwdB9cq82vHTixKgnhjvpydu+lzJbW/xCALxSPVwdBmgjNggeGSZkkiZOpMRkPHpHwttmPjsTQ9SlP/+KoZQCpHEujtt/qhhZy7/nTAhIBScP9A/RS0QwuQ1qfI1svKzEp/2IluTVkSM/1Ja3OI0vdbm2qA7HWXzObdOSh2rw0x4mhL9Pr1eJA+sTP4twbh7+VRcG8cFTTnaXiJl+QyviXRcf6X/5nknujNJ4yo8ZR0KfYfdaj+XcscDYn7rLk41yjvUwEp9fwq+VHNGqxADK0lZSuI+Fu+sIGlv/tYZOp/ERfu+v+B6uIFn3qllbnBmvPhy2v3ELK7HemWl1MJCg5S2nlxdSdwVI3x4QnwHUqBL7FK+hm63gdjyWz7mMxFmasgU/pXYaRJj/j814heZgGSEWZvR9M/LKpB55RetJjIV1g5aPCowt/spKhAIa02kwoxOn4z6CaUogeLDTi98VIuS10pb48f429dDpLuv4jI5VoACFSyOpsqyNCYv/RaqVxCBGkSANF6MyNEHR/YCWRR/vZtYwDfOBDfxPueD2lnutgHz3AmU8Q9tALH4JgGB1bTlI7lGxt0m0tDu8ypNZ/9E/lUF9V6rUOonUVCaIw1G52jNbLZ1j04l7u69TkXpLsSPHyCzqU=
