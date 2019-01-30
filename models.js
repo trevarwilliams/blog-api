@@ -46,7 +46,7 @@ const BlogPosts = {
       this.posts.splice(postIndex, 1);
     }
   },
-  update: function(updatedPost) {
+  update: function (updatedPost) {
     const {id} = updatedPost;
     const postIndex = this.posts.findIndex(
       post => post.id === updatedPost.id);
