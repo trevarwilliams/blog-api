@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const { BlogPosts } = require("./models");
@@ -6,25 +6,25 @@ const { BlogPosts } = require("./models");
 // Add a blog post to BlogPosts
 // New post needs: Title, content, author, (option) publication date
 BlogPosts.create(
-  'Title placeholder1',
-  'Content placeholder1',
-  'Author placeholder1'
+  "Title placeholder1",
+  "Content placeholder1",
+  "Author placeholder1"
 );
 BlogPosts.create(
-  'Title placeholder2',
-  'Content placeholder2',
-  'Author placeholder2'
+  "Title placeholder2",
+  "Content placeholder2",
+  "Author placeholder2"
 );
-
+console.log("BlogPosts", BlogPosts);
 // GET
-router.get('/blog-posts', (req, res) => {
+router.get("/", (req, res) => {
   res.json(BlogPosts.get());
 });
 
 // POST
-router.post('/blog-posts', (req, res) => {
+router.post("/", (req, res) => {
   // Validate fields
-  const requiredFields = ['title', 'content', 'author'];
+  const requiredFields = ["title", "content", "author"];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i]
     // Missing field
@@ -44,9 +44,9 @@ router.post('/blog-posts', (req, res) => {
 });
 
 // PUT
-router.put('/blog-posts/:id', (req, res) => {
+router.put("/:id", (req, res) => {
   // Validate fields
-  const requiredFields = ['title', 'content', 'author', 'publishDate', 'id'];
+  const requiredFields = ["title", "content", "author", "publishDate", "id"];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     // Missing field
@@ -77,7 +77,7 @@ router.put('/blog-posts/:id', (req, res) => {
 });
 
 // DELETE
-router.delete('/blog-posts/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
   BlogPosts.delete(req.params.id);
   console.log(`Deleted blog post \`${req.params.id}\``);
   res.status(204).end();
