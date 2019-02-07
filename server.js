@@ -7,14 +7,14 @@ const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
 const { PORT, DATABASE_URL } = require("./config");
-const { BlogPost } = require('./models');
+const { BlogPost, Author } = require('./models');
 
 const app = express();
 
 app.use(morgan("common")); 
 app.use(express.json());
 
-// GET
+// don't need to adjust this since we have authorSchema & prehooks for finding author on find & findone before serialize, right?
 app.get('/posts', (req, res) => {
   BlogPost.find()
     .then(posts => {
@@ -27,6 +27,8 @@ app.get('/posts', (req, res) => {
 });
 
 // GET by id
+  // don't need to adjust this since commentSchema is defined within serialize function now?
+  // comments are part of same collection / document so no need for populate pre-hooks?
 app.get('/posts/:id', (req, res) => {
   BlogPost
     .findById(req.params.id)
@@ -39,7 +41,7 @@ app.get('/posts/:id', (req, res) => {
 
 // POST
 app.post('/posts', (req, res) => {
-  const requiredFields = ['title', 'content', 'author'];
+  const requiredFields = ['title', 'content', 'author_id'];
   for (let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -48,14 +50,28 @@ app.post('/posts', (req, res) => {
       return res.status(400).send(message);
     }
   }
-
-  BlogPost
-    .create({
-      title: req.body.title,
-      content: req.body.content,
-      author: req.body.author
+  Author
+    .findById(req.author_id)
+    .then(author => {
+      if (author) {
+        BlogPost
+          .create({
+            title: req.body.title,
+            content: req.body.content,
+            author: req.body.id
+          })
+          .then(blogPost => res.status(201).json(blogPost.serialize()))
+          .catch(err => {
+            console.error(err);
+            res.status(500).json({ message: 'Internal server error' });
+          })
+      }
+      else {
+        const message = 'Author does not exist';
+        console.error(err);
+        res.status(400).send(message)
+      }
     })
-    .then(blogPost => res.status(201).json(blogPost.serialize()))
     .catch(err => {
       console.error(err);
       res.status(500).json({ message: 'Internal server error' });
@@ -73,7 +89,7 @@ app.put('/posts/:id', (req, res) => {
   }
   
   const toUpdate = {};
-  const updateableFields = ['title', 'content', 'author'];
+  const updateableFields = ['title', 'content'];
   updateableFields.forEach(field => {
     if (field in req.body) {
       update[field] = req.body[field];
@@ -82,7 +98,11 @@ app.put('/posts/:id', (req, res) => {
 
   BlogPost
     .findByIdAndUpdate(req.params.id, { $set: updated })
-    .then(BlogPost => res.status(204).end())
+    .then(blogPost => res.status(200).json({
+      id: blogPost.id,
+      title: blogPost.title,
+      content: blogPost.content
+    }))
     .catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
 
@@ -92,6 +112,53 @@ app.delete('/posts/:id', (req, res) => {
     .then(BlogPost => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
+
+// POST /authors
+app.post('/authors', (req, res) => {
+  const requiredFields = ['firstName', 'lastName', 'userName'];
+  for (let i = 0; i < requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Missing \`${field}\` in request body`;
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  };
+Author
+  .create({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    userName: req.body.userName
+  })
+  .then(author => {
+    res.status(201).json({
+      _id: author.id,
+      name: `${author.firstName} ${author.lastName}`,
+      userName: author.userName
+    })
+  })
+  .catch(err => res.status(500).json({ message: 'Internal server error' }));
+    // firstName, lastName, userName (and userName doesn't exist already)
+    // if invalid status(400) + console.err(message)
+})
+//PUT /authors
+  // req.body
+    // firstName
+    // lastName
+    // userName
+  // _id MUST be present
+  // if authors/(:id) =/= req.body.authors.id -> status(400) + error message
+  // if userName already taken -> status(400) + error message
+  // return status(200) + updated:
+    // _id
+    // name: firstName + lastName
+    // userName
+
+// DELETE /authors/:id
+  // delete author via _id
+  // delete any blog posts by that author
+  // status(204) + no content
+
 
 // Non-existent endpoint
 app.use('*', function (req, res) {
