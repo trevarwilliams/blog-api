@@ -24,7 +24,7 @@ const blogPostSchema = mongoose.Schema({
 });
 
 blogPostSchema.virtual('authorName').get(function () {
-  return `${this.author.firstName} ${this.author.lastName}`
+  return `${this.author.firstName} ${this.Author.lastName}`
 });
 
 blogPostSchema.pre('find', function (next) {
@@ -42,7 +42,7 @@ blogPostSchema.methods.serialize = function () {
     id: this._id,
     title: this.title,
     content: this.content,
-    author: this.authorName,
+    author: `${author.firstName} ${author.lastName}`,
     created: this.created,
     comments: this.comments
   };

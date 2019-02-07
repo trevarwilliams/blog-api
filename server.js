@@ -14,7 +14,7 @@ const app = express();
 app.use(morgan("common")); 
 app.use(express.json());
 
-// don't need to adjust this since we have authorSchema & prehooks for finding author on find & findone before serialize, right?
+// GET
 app.get('/posts', (req, res) => {
   BlogPost.find()
     .then(posts => {
@@ -26,9 +26,25 @@ app.get('/posts', (req, res) => {
     });
 });
 
+app.get('/authors', (req, res) => {
+  Author
+    .find()
+    .then(author => {
+      res.json(author.map(author => {
+        return {
+          id: author._id,
+          name: `${author.firstName} ${author.lastName}`,
+          userName: author.userName
+        };
+      }));
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    })
+});
+
 // GET by id
-  // don't need to adjust this since commentSchema is defined within serialize function now?
-  // comments are part of same collection / document so no need for populate pre-hooks?
 app.get('/posts/:id', (req, res) => {
   BlogPost
     .findById(req.params.id)
@@ -38,6 +54,22 @@ app.get('/posts/:id', (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   });
 });
+
+app.get('/authors/:id', (req, res) => {
+  Author
+    .findById(req.params.id)
+    .then(author => {
+      res.json({
+        id: author.id,
+        name: `${author.firstName} ${author.lastName}`,
+        username: author.userName
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    })
+})
 
 // POST
 app.post('/posts', (req, res) => {
@@ -51,7 +83,7 @@ app.post('/posts', (req, res) => {
     }
   }
   Author
-    .findById(req.author_id)
+    .findById(req.body.author_id)
     .then(author => {
       if (author) {
         BlogPost
@@ -60,7 +92,13 @@ app.post('/posts', (req, res) => {
             content: req.body.content,
             author: req.body.id
           })
-          .then(blogPost => res.status(201).json(blogPost.serialize()))
+          .then(blogPost => res.status(201).json({
+            id: blogPost.id,
+            title: blogPost.title,
+            author: `${author.firstName} ${author.lastName}`,
+            content: blogPost.content,
+            comments: blogPost.comments
+          }))
           .catch(err => {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });
@@ -68,7 +106,7 @@ app.post('/posts', (req, res) => {
       }
       else {
         const message = 'Author does not exist';
-        console.error(err);
+        console.error(message);
         res.status(400).send(message)
       }
     })
